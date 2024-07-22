@@ -1,0 +1,89 @@
+const router = require("express").Router();
+const  Order = require("../Model/orderModel")
+
+
+//create
+router.post("/add",(req,res)=> {
+    const {name,email,contact,item,status} = req.body
+    const newOrder  = new Order({
+   
+        name,
+        email,
+        contact,
+        item, 
+        status
+
+    })
+    newOrder.save().then(()=>{
+           res.send("order added successfully..")
+    }).catch((error)=>{
+        res.send(error)
+    })
+
+})
+
+//get
+
+router.get("/",(req,res)=>{
+    Order.find().then((order)=>{
+ res.send(order)
+    }).catch((error)=>{
+         res.send(error)
+    })
+
+})
+
+//update
+
+router.put("/update/:id",(req,res)=>{
+
+    const OrderId = req.params.id;
+    const {name,email,contact,item,status} = req.body
+    const updateOrder={
+        name,
+        email,
+        contact,
+        item,
+        status} 
+
+
+
+const updatedOrder = Order.findByIdAndUpdate(OrderId,updateOrder).then((order)=>{
+    res.send("order Updated Successfully...")
+}).catch((error)=>{
+   res.send(error)    
+ })
+
+}) 
+
+//delete
+
+router.delete("/delete/:id",(req,res)=>{
+   const orderid = req.params.id;
+   Order.findByIdAndDelete(orderid).then(()=>{
+   res.send("order deleted")
+}).catch((error)=>{
+    res.send(error)   
+})
+
+})
+
+//get one order by id
+
+
+
+router.get("/:id",(req,res)=>{
+
+    const orderid = req.params.id;
+   
+       Order.findById(orderid).then((order)=>{
+           res.send(order)
+       }).catch((error)=>{
+           res.send(error)
+       })
+   })  
+
+
+
+
+module.exports = router
