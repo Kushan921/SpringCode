@@ -1,11 +1,11 @@
-const express =require("express");
+const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const dotenv = require("dotenv");
 const bodyParser = require("body-parser");
 
 const app = express();
-require("dotenv").config();
+dotenv.config();
 
 const PORT = process.env.PORT || 8013;
 
@@ -14,22 +14,13 @@ app.use(bodyParser.json());
 
 const URL = process.env.MONGODB_URL;
 
-mongoose.connect(URL, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true 
-});
+mongoose.connect(URL)
+    .then(() => console.log("mongoDB connection success !!"))
+    .catch((err) => console.error("mongoDB connection error:", err));
 
-const connection = mongoose.connection;
-connection.once('open', ()=> {
-    console.log("mongoDB connection success !!");
-   
-})
-
- const orderRouter = require("./Routes/orderRoutes");
-  app.use("/orders", orderRouter);
-
-
+const orderRouter = require("./Routes/orderRoutes");
+app.use("/orders", orderRouter);
 
 app.listen(PORT, () => {
-    console.log(`Server is up and running on port no: ${PORT}`)
-})
+    console.log(`Server is up and running on port no: ${PORT}`);
+});
