@@ -21,6 +21,28 @@ mongoose.connect(URL)
 const orderRouter = require("./Routes/orderRoutes");
 app.use("/orders", orderRouter);
 
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
     console.log(`Server is up and running on port no: ${PORT}`);
+});
+
+process.on('SIGTERM', () => {
+    console.log('SIGTERM signal received.');
+    server.close(() => {
+        console.log('HTTP server closed.');
+        mongoose.connection.close(false, () => {
+            console.log('MongoDB connection closed.');
+            process.exit(0);
+        });
+    });
+});
+
+process.on('SIGINT', () => {
+    console.log('SIGINT signal received.');
+    server.close(() => {
+        console.log('HTTP server closed.');
+        mongoose.connection.close(false, () => {
+            console.log('MongoDB connection closed.');
+            process.exit(0);
+        });
+    });
 });
